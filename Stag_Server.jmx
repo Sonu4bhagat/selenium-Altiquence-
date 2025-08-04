@@ -1,0 +1,2481 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan">
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+    </TestPlan>
+    <hashTree>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="Stag_Server" elementType="Argument">
+            <stringProp name="Argument.name">Stag_Server</stringProp>
+            <stringProp name="Argument.value">stagingbackendvault.smartping.io</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </Arguments>
+      <hashTree/>
+      <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
+        <stringProp name="delimiter">,</stringProp>
+        <stringProp name="fileEncoding"></stringProp>
+        <stringProp name="filename">C:/Users/Lenovo/Desktop/jmeter/Jmeter_Related_Value - Sheet1.csv</stringProp>
+        <boolProp name="ignoreFirstLine">false</boolProp>
+        <boolProp name="quotedData">false</boolProp>
+        <boolProp name="recycle">true</boolProp>
+        <stringProp name="shareMode">shareMode.all</stringProp>
+        <boolProp name="stopThread">false</boolProp>
+        <stringProp name="variableNames">svCustomerID,CustomerID</stringProp>
+      </CSVDataSet>
+      <hashTree/>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Login_Token" enabled="true">
+        <intProp name="ThreadGroup.num_threads">1</intProp>
+        <intProp name="ThreadGroup.ramp_time">1</intProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller">
+          <stringProp name="LoopController.loops">1</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Token" enabled="true">
+          <stringProp name="HTTPSampler.domain">${Stag_Server}</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">backend/smartvault/admin/auth</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+&quot;username&quot;: &quot;jayaram.yedla@nuacem.com&quot;,&#xd;
+&quot;password&quot;: &quot;Test@1234&quot;&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">access_token</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.token</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+          </JSONPostProcessor>
+          <hashTree/>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="JSR223 PostProcessor" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">String token = vars.get(&quot;access_token&quot;);
+props.put(&quot;BEARER_TOKEN&quot;, token);
+</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="false">
+            <stringProp name="ConstantTimer.delay">1000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+        </hashTree>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="SMS_Service" enabled="true">
+        <intProp name="ThreadGroup.num_threads">1</intProp>
+        <intProp name="ThreadGroup.ramp_time">1</intProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller">
+          <stringProp name="LoopController.loops">1</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST_Create_customers">
+          <stringProp name="HTTPSampler.domain">stagingbackendvault.smartping.io</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">/backend/smartvault/admin/customers</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;customerId&quot;: &quot;${customer_Id}&quot;,&#xd;
+    &quot;customerType&quot;: &quot;reseller&quot;,&#xd;
+    &quot;firstName&quot;: &quot;Sonu_kr&quot;,&#xd;
+    &quot;lastName&quot;: &quot;Bhagat&quot;,&#xd;
+    &quot;organizationName&quot;: &quot;${organization_Name}&quot;,&#xd;
+    &quot;accountManager&quot;: &quot;accountmanager&quot;,&#xd;
+    &quot;username&quot;: &quot;${username}&quot;,&#xd;
+    &quot;password&quot;: &quot;test@2025&quot;,&#xd;
+    &quot;mobileNo&quot;: &quot;${mobile_No}&quot;,&#xd;
+    &quot;country&quot;: &quot;India&quot;,&#xd;
+    &quot;maxSvProfiles&quot;: 3,&#xd;
+    &quot;isWhitelabeled&quot;: false,&#xd;
+    &quot;circleName&quot;: &quot;Hyderabad&quot;,&#xd;
+    &quot;zoneName&quot;: &quot;South&quot;,&#xd;
+    &quot;tId&quot;: &quot;${t_Id}&quot;&#xd;
+}&#xd;
+</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${__P(BEARER_TOKEN)}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Accept</stringProp>
+                <stringProp name="Header.value">*/* </stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor">
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="script">// Generate random numbers
+int randCustomerId = 1 + (int)(Math.random() * 9999);
+int randOrgName = 1 + (int)(Math.random() * 9995);
+int randUsername = 1 + (int)(Math.random() * 9968);
+int randMobile = 100000000 + (int)(Math.random() * 899999999);
+int randTId = 11111 + (int)(Math.random() * 88888);
+
+// Construct strings
+String customerId = &quot;TESTCUY&quot; + randCustomerId;
+String organizationName = &quot;TechCorpSolution&quot; + randOrgName;
+String username = &quot;sonu.bhagat+&quot; + randUsername + &quot;@altiquence.com&quot;;
+String mobileNo = &quot;9&quot; + randMobile;
+String tId = &quot;TYCVISP&quot; + randTId;
+
+// Set JMeter variables
+vars.put(&quot;customer_Id&quot;, customerId);
+vars.put(&quot;organization_Name&quot;, organizationName);
+vars.put(&quot;username&quot;, username);
+vars.put(&quot;mobile_No&quot;, mobileNo);
+vars.put(&quot;t_Id&quot;, tId);
+
+</stringProp>
+          </BeanShellPreProcessor>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST_Create_wallets_dummy" enabled="false">
+          <stringProp name="HTTPSampler.domain">${Stag_Server}</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">/backend/smartvault/admin/SV1719874898/wallets</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;customerId&quot;: &quot;${CustomerID}&quot;,&#xd;
+    &quot;tId&quot;: &quot;${t_Id}&quot;,      &#xd;
+    &quot;walletName&quot;: &quot;TECHCORP-UW-487&quot;, &#xd;
+    &quot;walletMode&quot;: &quot;UW&quot;,&#xd;
+    &quot;walletType&quot;: &quot;postpaid&quot;,&#xd;
+    &quot;billingCycle&quot;: &quot;monthly&quot;	 &#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${__P(BEARER_TOKEN)}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="true">
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="script">int randTId = 111 + (int)(Math.random() * 888);
+int randWalletN = 111 + (int)(Math.random() * 888);
+
+String tId = &quot;TYCVISP&quot; + randTId;
+String WalletN = &quot;TechCorp-UW-&quot; + randWalletN;
+
+vars.put(&quot;t_Id&quot;, tId);
+vars.put(&quot;Wallet_N&quot;, WalletN);</stringProp>
+          </BeanShellPreProcessor>
+          <hashTree/>
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">ValidWalletNames</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.walletName</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+          </JSONPostProcessor>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="49587">201</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">8</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST_Create_wallets_SSW" enabled="false">
+          <stringProp name="HTTPSampler.domain">${Stag_Server}</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">/backend/smartvault/admin/${svCustomerID}/wallets</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+ &quot;customerId&quot;: &quot;${CustomerID}&quot;,&#xd;
+ &quot;tId&quot;: &quot;${t_Id}&quot;,&#xd;
+ &quot;walletName&quot;: &quot;${Wallet_N}&quot;,&#xd;
+ &quot;walletMode&quot;: &quot;SSW&quot;,&#xd;
+ &quot;walletType&quot;: &quot;prepaid&quot;,&#xd;
+ &quot;billingCycle&quot;: &quot;yearly&quot;&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${__P(BEARER_TOKEN)}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="true">
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="script">int randTId = 111 + (int)(Math.random() * 888);
+int randWalletN = 111 + (int)(Math.random() * 888);
+
+String tId = &quot;TYCVISP&quot; + randTId;
+String WalletN = &quot;TechCorp-SSW-&quot; + randWalletN;
+
+vars.put(&quot;t_Id&quot;, tId);
+vars.put(&quot;Wallet_N&quot;, WalletN);</stringProp>
+          </BeanShellPreProcessor>
+          <hashTree/>
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">ValidWalletNames</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.walletName</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+          </JSONPostProcessor>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="49587">201</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">8</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST_Create_wallets" enabled="false">
+          <stringProp name="HTTPSampler.domain">${Stag_Server}</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">/backend/smartvault/admin/${svCustomerID}/wallets</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;customerId&quot;: &quot;${CustomerID}&quot;,&#xd;
+    &quot;tId&quot;: &quot;${t_Id}&quot;,      &#xd;
+    &quot;walletName&quot;: &quot;${Wallet_N}&quot;, &#xd;
+    &quot;walletMode&quot;: &quot;UW&quot;,&#xd;
+    &quot;walletType&quot;: &quot;postpaid&quot;,&#xd;
+    &quot;billingCycle&quot;: &quot;monthly&quot;	 &#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${__P(BEARER_TOKEN)}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="true">
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="script">int randTId = 111 + (int)(Math.random() * 888);
+int randWalletN = 111 + (int)(Math.random() * 888);
+
+String tId = &quot;TYCVISP&quot; + randTId;
+String WalletN = &quot;TechCorp-UW-&quot; + randWalletN;
+
+vars.put(&quot;t_Id&quot;, tId);
+vars.put(&quot;Wallet_N&quot;, WalletN);</stringProp>
+          </BeanShellPreProcessor>
+          <hashTree/>
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">ValidWalletNames</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.walletName</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+          </JSONPostProcessor>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="49587">201</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">8</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET_Balance_Enquiry" enabled="false">
+          <stringProp name="HTTPSampler.domain">${Stag_Server}</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">/backend/smartvault/api/v1/wallets/${svCustomerID}/${ValidWalletNames}/balance-enquiry</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+ &quot;customerId&quot;: &quot;${CustomerID}&quot;,&#xd;
+ &quot;tId&quot;: &quot;${t_Id}&quot;,      &#xd;
+ &quot;walletName&quot;: &quot;${ValidWalletNames}&quot;, &#xd;
+ &quot;walletMode&quot;: &quot;UW&quot;,&#xd;
+ &quot;walletType&quot;: &quot;postpaid&quot;,&#xd;
+ &quot;billingCycle&quot;: &quot;monthly&quot;&#xd;
+ }</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${__P(BEARER_TOKEN)}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="false">
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="script">int randTId = 111 + (int)(Math.random() * 888);
+
+String tId = &quot;TYCVISP&quot; + randTId;
+
+vars.put(&quot;t_Id&quot;, tId);</stringProp>
+          </BeanShellPreProcessor>
+          <hashTree/>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="true">
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="script">// Generate a random t_Id
+int randTId = 111 + (int)(Math.random() * 888);
+String tId = &quot;TYCVISP&quot; + randTId;
+vars.put(&quot;t_Id&quot;, tId);
+
+// Filter the Wallet Names
+String svCustomerID = vars.get(&quot;svCustomerID&quot;);
+String[] allWalletNames = vars.get(&quot;ExtractedWalletNames&quot;).split(&quot;,&quot;);
+
+StringBuilder matchedWallets = new StringBuilder();
+for (String walletName : allWalletNames) {
+    if (walletName.startsWith(&quot;TechCorp&quot;)) {  // Adjust the prefix if needed
+        matchedWallets.append(walletName.trim()).append(&quot;,&quot;);
+    }
+}
+
+if (matchedWallets.length() &gt; 0) {
+    matchedWallets.setLength(matchedWallets.length() - 1);
+}
+
+vars.put(&quot;ValidWalletNames&quot;, matchedWallets.toString());
+log.info(&quot;Filtered Wallet Names: &quot; + matchedWallets.toString());
+</stringProp>
+          </BeanShellPreProcessor>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">2000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="49586">200</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">8</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PUT_Update_Rate_Card_dummy" enabled="false">
+          <stringProp name="HTTPSampler.domain">${Stag_Server}</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">/backend/smartvault/admin/SV1719874898/TechCorp-UW-487/rate-cards</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">PUT</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;customerId&quot;: &quot;Testcuy6831&quot;,&#xd;
+    &quot;tId&quot;: &quot;${t_Id}&quot;,&#xd;
+    &quot;services&quot;: {&#xd;
+        &quot;ccs&quot;: {&#xd;
+            &quot;oneTimeBilling&quot;: {&#xd;
+               &quot;otc&quot;: 116,&#xd;
+                &quot;securityDeposit&quot;: 810,&#xd;
+                &quot;advanceCharges&quot;: 199&#xd;
+            },&#xd;
+            &quot;periodicBilling&quot;: {&#xd;
+                &quot;costPerDid&quot;: 5000,&#xd;
+                &quot;costPerVmn&quot;: 4000,&#xd;
+                &quot;costPerAgent&quot;: 5000,&#xd;
+                &quot;costPerSupervisor&quot;: 6000,&#xd;
+                &quot;costPerQualityAnalyst&quot;: 1000,&#xd;
+                &quot;costVoiceLogger&quot;: 2000,&#xd;
+                &quot;costPerChannel&quot;: 5000,&#xd;
+                &quot;costPerOperator&quot;: 500,&#xd;
+                &quot;costPerCampaignSupervisor&quot;: 500,&#xd;
+                &quot;premiumNumberCharges&quot;: 5000,&#xd;
+                &quot;fixedRental&quot;: 4000,&#xd;
+                &quot;platformCharges&quot;: 3000,&#xd;
+                &quot;cliCharges&quot;: 5000,&#xd;
+                &quot;freeCallValue&quot;: 1000,&#xd;
+                &quot;recordingStorageChargePerMonthPerMb&quot;: 100,&#xd;
+                &quot;costPerCallRecording&quot;: 5000,&#xd;
+                &quot;otherCharges&quot;: 3000&#xd;
+            },&#xd;
+            &quot;transactionalBilling&quot;: {&#xd;
+                &quot;chargingMode&quot;: &quot;answered&quot;,&#xd;
+                &quot;pulseDuration&quot;: 45,&#xd;
+                &quot;pulseRate&quot;: 2,&#xd;
+                &quot;clickToCallCharges&quot;: 6000,&#xd;
+                &quot;ttsChargePerChar&quot;: 524&#xd;
+            }&#xd;
+        }&#xd;
+    }&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="true">
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="script">// Generate a random t_Id
+int randTId = 111 + (int)(Math.random() * 888);
+String tId = &quot;TYCVISP&quot; + randTId;
+vars.put(&quot;t_Id&quot;, tId);
+
+// Filter the Wallet Names
+String svCustomerID = vars.get(&quot;svCustomerID&quot;);
+String[] allWalletNames = vars.get(&quot;ExtractedWalletNames&quot;).split(&quot;,&quot;);
+
+StringBuilder matchedWallets = new StringBuilder();
+for (String walletName : allWalletNames) {
+    if (walletName.startsWith(&quot;TechCorp&quot;)) {  // Adjust the prefix if needed
+        matchedWallets.append(walletName.trim()).append(&quot;,&quot;);
+    }
+}
+
+if (matchedWallets.length() &gt; 0) {
+    matchedWallets.setLength(matchedWallets.length() - 1);
+}
+
+vars.put(&quot;ValidWalletNames&quot;, matchedWallets.toString());
+log.info(&quot;Filtered Wallet Names: &quot; + matchedWallets.toString());
+</stringProp>
+          </BeanShellPreProcessor>
+          <hashTree/>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${__P(BEARER_TOKEN)}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">2000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="49586">200</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">8</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PUT_Update_Rate_Card" enabled="false">
+          <stringProp name="HTTPSampler.domain">${Stag_Server}</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">/backend/smartvault/admin/${svCustomerID}/${ValidWalletNames}/rate-cards</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">PUT</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;customerId&quot;: &quot;${CustomerID}&quot;,&#xd;
+    &quot;tId&quot;: &quot;${t_Id}&quot;,&#xd;
+    &quot;services&quot;: {&#xd;
+        &quot;ivr&quot;: {&#xd;
+            &quot;oneTimeBilling&quot;: {&#xd;
+                &quot;otc&quot;: 111,&#xd;
+                &quot;securityDeposit&quot;: 50,&#xd;
+                &quot;advanceCharges&quot;: 59,&#xd;
+                &quot;fixedPeriodicCharge&quot;: 166&#xd;
+            },&#xd;
+            &quot;periodicBilling&quot;: {&#xd;
+                &quot;costPerDid&quot;: 760,&#xd;
+                &quot;costPerVmn&quot;: 100,&#xd;
+                &quot;freeCallValue&quot;: 100,&#xd;
+                &quot;costPerChannel&quot;: 10,&#xd;
+                &quot;fixedPeriodicCharge&quot;: 166,&#xd;
+                &quot;recordingStorageChargePerMonthPerMb&quot;: 190&#xd;
+            },&#xd;
+            &quot;transactionalBilling&quot;: {&#xd;
+                &quot;ttsChargePerChar&quot;: 500,&#xd;
+                &quot;chargingMode&quot;: &quot;dialledCall&quot;,&#xd;
+                &quot;dltCharge&quot;: 200,&#xd;
+                &quot;ivrBaseRate&quot;: {&#xd;
+                    &quot;pulseRate&quot;: 12,&#xd;
+                    &quot;pulseDuration&quot;: 45&#xd;
+                },&#xd;
+                &quot;ivrRatePerType&quot;: [&#xd;
+                    {&#xd;
+                        &quot;ivrTemplate&quot;: &quot;simple_voice&quot;,&#xd;
+                        &quot;connectionType&quot;: &quot;promo&quot;,&#xd;
+                        &quot;pulseRate&quot;: 10,&#xd;
+                        &quot;pulseDuration&quot;: 45&#xd;
+                    },&#xd;
+                    {&#xd;
+                        &quot;ivrTemplate&quot;: &quot;custom_flow&quot;,&#xd;
+                        &quot;connectionType&quot;: &quot;trans&quot;,&#xd;
+                        &quot;pulseRate&quot;: 5,&#xd;
+                        &quot;pulseDuration&quot;: 45&#xd;
+                    }&#xd;
+                ]&#xd;
+            }&#xd;
+        }&#xd;
+    }&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="true">
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="script">// Generate a random t_Id
+int randTId = 111 + (int)(Math.random() * 888);
+String tId = &quot;TYCVISP&quot; + randTId;
+vars.put(&quot;t_Id&quot;, tId);
+
+// Filter the Wallet Names
+String svCustomerID = vars.get(&quot;svCustomerID&quot;);
+String[] allWalletNames = vars.get(&quot;ExtractedWalletNames&quot;).split(&quot;,&quot;);
+
+StringBuilder matchedWallets = new StringBuilder();
+for (String walletName : allWalletNames) {
+    if (walletName.startsWith(&quot;TechCorp&quot;)) {  // Adjust the prefix if needed
+        matchedWallets.append(walletName.trim()).append(&quot;,&quot;);
+    }
+}
+
+if (matchedWallets.length() &gt; 0) {
+    matchedWallets.setLength(matchedWallets.length() - 1);
+}
+
+vars.put(&quot;ValidWalletNames&quot;, matchedWallets.toString());
+log.info(&quot;Filtered Wallet Names: &quot; + matchedWallets.toString());
+</stringProp>
+          </BeanShellPreProcessor>
+          <hashTree/>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${__P(BEARER_TOKEN)}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">2000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="49586">200</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">8</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST_Create_Service_SMS_Account" enabled="false">
+          <stringProp name="HTTPSampler.domain">${Stag_Server}</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">/backend/smartvault/admin/${svCustomerID}/${ValidWalletNames}/service-accounts</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;customerId&quot;: &quot;${CustomerID}&quot;,&#xd;
+    &quot;tId&quot;: &quot;${t_Id}&quot;,&#xd;
+    &quot;services&quot;: {&#xd;
+        &quot;sms&quot;: [&#xd;
+            {&#xd;
+                &quot;serviceAccountName&quot;:&quot;${SEV_name}&quot;,&#xd;
+&#xd;
+                &quot;connectionType&quot;: [&#xd;
+                    &quot;transactional&quot;,&#xd;
+                    &quot;promotional&quot;&#xd;
+                    &#xd;
+                ],&#xd;
+                &quot;trafficType&quot;: &quot;national&quot;,&#xd;
+                &quot;enabledChannels&quot;: [&#xd;
+                    &quot;GUI&quot;,&#xd;
+                    &quot;HTTP&quot;&#xd;
+                ],&#xd;
+                &quot;dltPrincipalEntityId&quot;: &quot;2121343413131&quot;,&#xd;
+                &quot;dltTelemarketerId&quot;: &quot;2121343413131&quot;,&#xd;
+                &quot;dltTelemarketerDeliveryId&quot;: &quot;2121343413131&quot;,&#xd;
+                &quot;peTmNoChain&quot;: true,&#xd;
+                &quot;validityFrom&quot;: &quot;2025-02-27T14:57:19.000Z&quot;,&#xd;
+                &quot;validityTo&quot;: &quot;2026-05-25T14:57:19.000Z&quot;,&#xd;
+                &quot;spamFiltrationType&quot;: &quot;medium&quot;,&#xd;
+                &quot;senderId&quot;: &quot;open&quot;,&#xd;
+                &quot;senderIdList&quot;: [&#xd;
+                    &quot;test123&quot;&#xd;
+                ],&#xd;
+                &quot;tps&quot;: 100,&#xd;
+                &quot;isAccountActive&quot;: true,&#xd;
+                &quot;trafficStartsAt&quot;: &quot;2025-02-27T14:57:19.000Z&quot;&#xd;
+            }&#xd;
+        ]&#xd;
+    }&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${__P(BEARER_TOKEN)}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="true">
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="script">// Generate a random t_Id
+int randTId = 111 + (int)(Math.random() * 888);
+String tId = &quot;TYCVISP&quot; + randTId;
+vars.put(&quot;t_Id&quot;, tId);
+
+// Generate a random 4-digit alphanumeric suffix (letters and numbers)
+String chars = &quot;abcdefghijklmnopqrstuvwxyz0123456789&quot;;
+StringBuilder suffix = new StringBuilder();
+for (int i = 0; i &lt; 4; i++) {
+    suffix.append(chars.charAt((int)(Math.random() * chars.length())));
+}
+
+String SEVname = &quot;svc&quot; + suffix.toString();
+vars.put(&quot;SEV_name&quot;, SEVname);
+
+log.info(&quot;Generated Service Account Name: &quot; + SEVname);
+
+
+// Filter the Wallet Names
+String svCustomerID = vars.get(&quot;svCustomerID&quot;);
+String[] allWalletNames = vars.get(&quot;ExtractedWalletNames&quot;).split(&quot;,&quot;);
+
+StringBuilder matchedWallets = new StringBuilder();
+for (String walletName : allWalletNames) {
+    if (walletName.startsWith(&quot;TechCorp&quot;)) {  // Adjust the prefix if needed
+        matchedWallets.append(walletName.trim()).append(&quot;,&quot;);
+    }
+}
+
+if (matchedWallets.length() &gt; 0) {
+    matchedWallets.setLength(matchedWallets.length() - 1);
+}
+
+vars.put(&quot;ValidWalletNames&quot;, matchedWallets.toString());
+log.info(&quot;Filtered Wallet Names: &quot; + matchedWallets.toString());
+</stringProp>
+          </BeanShellPreProcessor>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">2000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">serviceAccountName</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.services.sms[0].serviceAccountName</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+          </JSONPostProcessor>
+          <hashTree/>
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">licenceId</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.services.sms[0].licenceId</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+          </JSONPostProcessor>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="49587">201</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">16</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST_Create_Service_IVR_Account" enabled="false">
+          <stringProp name="HTTPSampler.domain">${Stag_Server}</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">/backend/smartvault/admin/${svCustomerID}/${ValidWalletNames}/service-accounts</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;customerId&quot;: &quot;${CustomerID}&quot;,&#xd;
+    &quot;tId&quot;: &quot;${t_Id}&quot;,&#xd;
+    &quot;services&quot;: {&#xd;
+        &quot;ivr&quot;: [&#xd;
+            {&#xd;
+                &quot;serviceAccountName&quot;: &quot;${SEV_name}&quot;,&#xd;
+                &quot;connectionType&quot;: [&#xd;
+                    &quot;transactional&quot;&#xd;
+                ],&#xd;
+                &quot;enabledChannels&quot;: [&#xd;
+                    &quot;GUI&quot;,&#xd;
+                    &quot;HTTP&quot;&#xd;
+                ],&#xd;
+                &quot;dltPrincipalEntityId&quot;: &quot;2121343413131&quot;,&#xd;
+                &quot;validityFrom&quot;: &quot;2025-02-27T14:57:19.000Z&quot;,&#xd;
+                &quot;validityTo&quot;: &quot;2026-05-25T14:57:19.000Z&quot;,&#xd;
+                &quot;isAccountActive&quot;: true,&#xd;
+                &quot;trafficType&quot;: &quot;national&quot;,&#xd;
+                &quot;tps&quot;: 1000&#xd;
+            }&#xd;
+        ]&#xd;
+    }&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${__P(BEARER_TOKEN)}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="true">
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="script">// Generate a random t_Id
+int randTId = 111 + (int)(Math.random() * 888);
+String tId = &quot;TYCVISP&quot; + randTId;
+vars.put(&quot;t_Id&quot;, tId);
+
+// Generate a random 4-digit alphanumeric suffix (letters and numbers)
+String chars = &quot;abcdefghijklmnopqrstuvwxyz0123456789&quot;;
+StringBuilder suffix = new StringBuilder();
+for (int i = 0; i &lt; 4; i++) {
+    suffix.append(chars.charAt((int)(Math.random() * chars.length())));
+}
+
+String SEVname = &quot;svc&quot; + suffix.toString();
+vars.put(&quot;SEV_name&quot;, SEVname);
+
+log.info(&quot;Generated Service Account Name: &quot; + SEVname);
+
+
+// Filter the Wallet Names
+String svCustomerID = vars.get(&quot;svCustomerID&quot;);
+String[] allWalletNames = vars.get(&quot;ExtractedWalletNames&quot;).split(&quot;,&quot;);
+
+StringBuilder matchedWallets = new StringBuilder();
+for (String walletName : allWalletNames) {
+    if (walletName.startsWith(&quot;TechCorp&quot;)) {  // Adjust the prefix if needed
+        matchedWallets.append(walletName.trim()).append(&quot;,&quot;);
+    }
+}
+
+if (matchedWallets.length() &gt; 0) {
+    matchedWallets.setLength(matchedWallets.length() - 1);
+}
+
+vars.put(&quot;ValidWalletNames&quot;, matchedWallets.toString());
+log.info(&quot;Filtered Wallet Names: &quot; + matchedWallets.toString());
+</stringProp>
+          </BeanShellPreProcessor>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">2000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">serviceAccountName</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.services.sms[0].serviceAccountName</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+          </JSONPostProcessor>
+          <hashTree/>
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">licenceId</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.services.sms[0].licenceId</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+          </JSONPostProcessor>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="49587">201</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">16</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST_Create_Service_IVR_Account_dummy" enabled="false">
+          <stringProp name="HTTPSampler.domain">${Stag_Server}</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">/backend/smartvault/admin/SV1613465620/TechCorp-UW-331/service-accounts</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;customerId&quot;: &quot;Testcuy6815&quot;,&#xd;
+    &quot;tId&quot;: &quot;${t_Id}&quot;,&#xd;
+    &quot;services&quot;: {&#xd;
+        &quot;sms&quot;: [&#xd;
+            {&#xd;
+                &quot;serviceAccountName&quot;:&quot;${SEV_name}&quot;,&#xd;
+&#xd;
+                &quot;connectionType&quot;: [&#xd;
+                    &quot;transactional&quot;,&#xd;
+                    &quot;promotional&quot;&#xd;
+                    &#xd;
+                ],&#xd;
+                &quot;trafficType&quot;: &quot;national&quot;,&#xd;
+                &quot;enabledChannels&quot;: [&#xd;
+                    &quot;GUI&quot;,&#xd;
+                    &quot;HTTP&quot;&#xd;
+                ],&#xd;
+                &quot;dltPrincipalEntityId&quot;: &quot;2121343413131&quot;,&#xd;
+                &quot;dltTelemarketerId&quot;: &quot;2121343413131&quot;,&#xd;
+                &quot;dltTelemarketerDeliveryId&quot;: &quot;2121343413131&quot;,&#xd;
+                &quot;peTmNoChain&quot;: true,&#xd;
+                &quot;validityFrom&quot;: &quot;2025-02-27T14:57:19.000Z&quot;,&#xd;
+                &quot;validityTo&quot;: &quot;2026-05-25T14:57:19.000Z&quot;,&#xd;
+                &quot;spamFiltrationType&quot;: &quot;medium&quot;,&#xd;
+                &quot;senderId&quot;: &quot;open&quot;,&#xd;
+                &quot;senderIdList&quot;: [&#xd;
+                    &quot;test123&quot;&#xd;
+                ],&#xd;
+                &quot;tps&quot;: 100,&#xd;
+                &quot;isAccountActive&quot;: true,&#xd;
+                &quot;trafficStartsAt&quot;: &quot;2025-02-27T14:57:19.000Z&quot;&#xd;
+            }&#xd;
+        ]&#xd;
+&#xd;
+    }&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${__P(BEARER_TOKEN)}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="true">
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="script">// Generate a random t_Id
+int randTId = 111 + (int)(Math.random() * 888);
+String tId = &quot;TYCVISP&quot; + randTId;
+vars.put(&quot;t_Id&quot;, tId);
+
+// Generate a random 4-digit alphanumeric suffix (letters and numbers)
+String chars = &quot;abcdefghijklmnopqrstuvwxyz0123456789&quot;;
+StringBuilder suffix = new StringBuilder();
+for (int i = 0; i &lt; 4; i++) {
+    suffix.append(chars.charAt((int)(Math.random() * chars.length())));
+}
+
+String SEVname = &quot;svc&quot; + suffix.toString();
+vars.put(&quot;SEV_name&quot;, SEVname);
+
+log.info(&quot;Generated Service Account Name: &quot; + SEVname);
+
+
+// Filter the Wallet Names
+String svCustomerID = vars.get(&quot;svCustomerID&quot;);
+String[] allWalletNames = vars.get(&quot;ExtractedWalletNames&quot;).split(&quot;,&quot;);
+
+StringBuilder matchedWallets = new StringBuilder();
+for (String walletName : allWalletNames) {
+    if (walletName.startsWith(&quot;TechCorp&quot;)) {  // Adjust the prefix if needed
+        matchedWallets.append(walletName.trim()).append(&quot;,&quot;);
+    }
+}
+
+if (matchedWallets.length() &gt; 0) {
+    matchedWallets.setLength(matchedWallets.length() - 1);
+}
+
+vars.put(&quot;ValidWalletNames&quot;, matchedWallets.toString());
+log.info(&quot;Filtered Wallet Names: &quot; + matchedWallets.toString());
+</stringProp>
+          </BeanShellPreProcessor>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">2000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">serviceAccountName</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.services.sms[0].serviceAccountName</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+          </JSONPostProcessor>
+          <hashTree/>
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">licenceId</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.services.sms[0].licenceId</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+          </JSONPostProcessor>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="49587">201</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">16</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST_Create_Service_OBD_Account" enabled="false">
+          <stringProp name="HTTPSampler.domain">${Stag_Server}</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">/backend/smartvault/admin/${svCustomerID}/${ValidWalletNames}/service-accounts</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;customerId&quot;: &quot;${CustomerID}&quot;,&#xd;
+    &quot;tId&quot;: &quot;${t_Id}&quot;,&#xd;
+    &quot;services&quot;: {&#xd;
+         &quot;obd&quot;: [&#xd;
+            {&#xd;
+                &quot;serviceAccountName&quot;: &quot;${SEV_name}&quot;,&#xd;
+                &quot;enabledChannels&quot;: [&#xd;
+                    &quot;GUI&quot;,&#xd;
+                    &quot;HTTP&quot;&#xd;
+                ],&#xd;
+                &quot;connectionType&quot;: [&#xd;
+                   &quot;transactional&quot;&#xd;
+                    &#xd;
+                    &#xd;
+                ],&#xd;
+                &quot;dltPrincipalEntityId&quot;: &quot;212144324891&quot;,&#xd;
+                &quot;validityFrom&quot;: &quot;2025-05-27T14:57:19.000Z&quot;,&#xd;
+                &quot;validityTo&quot;: &quot;2025-07-25T14:57:19.000Z&quot;,&#xd;
+                &quot;isAccountActive&quot;: true,&#xd;
+                &quot;trafficType&quot;: &quot;national&quot;,&#xd;
+                &quot;tps&quot;: 100,&#xd;
+                &quot;trafficStartsAt&quot;: &quot;2025-002-27T14:57:19.000Z&quot;&#xd;
+            }&#xd;
+        ]&#xd;
+    }&#xd;
+}&#xd;
+</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${__P(BEARER_TOKEN)}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="true">
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="script">// Generate a random t_Id
+int randTId = 111 + (int)(Math.random() * 888);
+String tId = &quot;TYCVISP&quot; + randTId;
+vars.put(&quot;t_Id&quot;, tId);
+
+// Generate a random 4-digit alphanumeric suffix (letters and numbers)
+String chars = &quot;abcdefghijklmnopqrstuvwxyz0123456789&quot;;
+StringBuilder suffix = new StringBuilder();
+for (int i = 0; i &lt; 4; i++) {
+    suffix.append(chars.charAt((int)(Math.random() * chars.length())));
+}
+
+String SEVname = &quot;svc&quot; + suffix.toString();
+vars.put(&quot;SEV_name&quot;, SEVname);
+
+log.info(&quot;Generated Service Account Name: &quot; + SEVname);
+
+
+// Filter the Wallet Names
+String svCustomerID = vars.get(&quot;svCustomerID&quot;);
+String[] allWalletNames = vars.get(&quot;ExtractedWalletNames&quot;).split(&quot;,&quot;);
+
+StringBuilder matchedWallets = new StringBuilder();
+for (String walletName : allWalletNames) {
+    if (walletName.startsWith(&quot;TechCorp&quot;)) {  // Adjust the prefix if needed
+        matchedWallets.append(walletName.trim()).append(&quot;,&quot;);
+    }
+}
+
+if (matchedWallets.length() &gt; 0) {
+    matchedWallets.setLength(matchedWallets.length() - 1);
+}
+
+vars.put(&quot;ValidWalletNames&quot;, matchedWallets.toString());
+log.info(&quot;Filtered Wallet Names: &quot; + matchedWallets.toString());
+</stringProp>
+          </BeanShellPreProcessor>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">2000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">serviceAccountName</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.services.sms[0].serviceAccountName</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+          </JSONPostProcessor>
+          <hashTree/>
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">licenceId</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.services.sms[0].licenceId</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+          </JSONPostProcessor>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="49587">201</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">16</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST_Create_Service_CCS_Account" enabled="false">
+          <stringProp name="HTTPSampler.domain">${Stag_Server}</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">/backend/smartvault/admin/${svCustomerID}/${ValidWalletNames}/service-accounts</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;customerId&quot;: &quot;${CustomerID}&quot;,&#xd;
+    &quot;tId&quot;: &quot;${t_Id}&quot;,&#xd;
+    &quot;services&quot;: {&#xd;
+         &quot;ccs&quot;: [&#xd;
+            {&#xd;
+                &quot;serviceAccountName&quot;: &quot;${SEV_name}&quot;,&#xd;
+                &quot;enabledChannels&quot;: [&#xd;
+                    &quot;GUI&quot;,&#xd;
+                    &quot;HTTP&quot;&#xd;
+                ],&#xd;
+                &quot;validityFrom&quot;: &quot;2025-02-27T14:57:19.000Z&quot;,&#xd;
+                &quot;validityTo&quot;: &quot;2026-05-25T14:57:19.000Z&quot;,&#xd;
+                &quot;gracePeriodEndDays&quot;: 15,&#xd;
+                &quot;trialDaysBeforeBilling&quot;: 178,&#xd;
+                &quot;isAccountActive&quot;: true,&#xd;
+                &quot;trafficType&quot;: &quot;national&quot;,&#xd;
+                &quot;tps&quot;: 100,&#xd;
+                 &quot;trafficStartsAt&quot;:&quot;2025-03-13T14:57:19.000Z&quot;&#xd;
+               &#xd;
+            }&#xd;
+        ]&#xd;
+&#xd;
+    }&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${__P(BEARER_TOKEN)}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="true">
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="script">// Generate a random t_Id
+int randTId = 111 + (int)(Math.random() * 888);
+String tId = &quot;TYCVISP&quot; + randTId;
+vars.put(&quot;t_Id&quot;, tId);
+
+// Generate a random 4-digit alphanumeric suffix (letters and numbers)
+String chars = &quot;abcdefghijklmnopqrstuvwxyz0123456789&quot;;
+StringBuilder suffix = new StringBuilder();
+for (int i = 0; i &lt; 4; i++) {
+    suffix.append(chars.charAt((int)(Math.random() * chars.length())));
+}
+
+String SEVname = &quot;svc&quot; + suffix.toString();
+vars.put(&quot;SEV_name&quot;, SEVname);
+
+log.info(&quot;Generated Service Account Name: &quot; + SEVname);
+
+
+// Filter the Wallet Names
+String svCustomerID = vars.get(&quot;svCustomerID&quot;);
+String[] allWalletNames = vars.get(&quot;ExtractedWalletNames&quot;).split(&quot;,&quot;);
+
+StringBuilder matchedWallets = new StringBuilder();
+for (String walletName : allWalletNames) {
+    if (walletName.startsWith(&quot;TechCorp&quot;)) {  // Adjust the prefix if needed
+        matchedWallets.append(walletName.trim()).append(&quot;,&quot;);
+    }
+}
+
+if (matchedWallets.length() &gt; 0) {
+    matchedWallets.setLength(matchedWallets.length() - 1);
+}
+
+vars.put(&quot;ValidWalletNames&quot;, matchedWallets.toString());
+log.info(&quot;Filtered Wallet Names: &quot; + matchedWallets.toString());
+</stringProp>
+          </BeanShellPreProcessor>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">2000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">serviceAccountName</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.services.sms[0].serviceAccountName</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+          </JSONPostProcessor>
+          <hashTree/>
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">licenceId</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.services.sms[0].licenceId</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+          </JSONPostProcessor>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="49587">201</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">16</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST_Create_Service_WABA_Account" enabled="false">
+          <stringProp name="HTTPSampler.domain">${Stag_Server}</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">/backend/smartvault/admin/${svCustomerID}/${ValidWalletNames}/service-accounts</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;customerId&quot;: &quot;${CustomerID}&quot;,&#xd;
+    &quot;tId&quot;: &quot;${t_Id}&quot;,&#xd;
+    &quot;services&quot;: {&#xd;
+        &quot;waba&quot; :&#xd;
+            [{&#xd;
+                &quot;serviceAccountName&quot; : &quot;${SEV_name}&quot;,&#xd;
+                &quot;enabledChannels&quot;: [&quot;GUI&quot;, &quot;HTTP&quot;],&#xd;
+                &quot;connectionType&quot;: [&quot;transactional&quot;, &quot;promotional&quot;],&#xd;
+                &quot;trafficType&quot;: &quot;national/international&quot;,	&#xd;
+                &quot;activeWabaBusinessNumber&quot;: &quot;919000000000&quot;,&#xd;
+               &quot;validityFrom&quot;: &quot;2025-02-27T14:57:19.000Z&quot;,&#xd;
+                &quot;validityTo&quot;: &quot;2026-05-25T14:57:19.000Z&quot;,&#xd;
+                &quot;bspName&quot;:&quot;rml&quot;,&#xd;
+                &quot;isAccountActive&quot;: true,&#xd;
+                &quot;tps&quot;: 1000&#xd;
+    	      }]&#xd;
+&#xd;
+    }&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${__P(BEARER_TOKEN)}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="true">
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="script">// Generate a random t_Id
+int randTId = 111 + (int)(Math.random() * 888);
+String tId = &quot;TYCVISP&quot; + randTId;
+vars.put(&quot;t_Id&quot;, tId);
+
+// Generate a random 4-digit alphanumeric suffix (letters and numbers)
+String chars = &quot;abcdefghijklmnopqrstuvwxyz0123456789&quot;;
+StringBuilder suffix = new StringBuilder();
+for (int i = 0; i &lt; 4; i++) {
+    suffix.append(chars.charAt((int)(Math.random() * chars.length())));
+}
+
+String SEVname = &quot;svc&quot; + suffix.toString();
+vars.put(&quot;SEV_name&quot;, SEVname);
+
+log.info(&quot;Generated Service Account Name: &quot; + SEVname);
+
+
+// Filter the Wallet Names
+String svCustomerID = vars.get(&quot;svCustomerID&quot;);
+String[] allWalletNames = vars.get(&quot;ExtractedWalletNames&quot;).split(&quot;,&quot;);
+
+StringBuilder matchedWallets = new StringBuilder();
+for (String walletName : allWalletNames) {
+    if (walletName.startsWith(&quot;TechCorp&quot;)) {  // Adjust the prefix if needed
+        matchedWallets.append(walletName.trim()).append(&quot;,&quot;);
+    }
+}
+
+if (matchedWallets.length() &gt; 0) {
+    matchedWallets.setLength(matchedWallets.length() - 1);
+}
+
+vars.put(&quot;ValidWalletNames&quot;, matchedWallets.toString());
+log.info(&quot;Filtered Wallet Names: &quot; + matchedWallets.toString());
+</stringProp>
+          </BeanShellPreProcessor>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">2000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">serviceAccountName</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.services.sms[0].serviceAccountName</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+          </JSONPostProcessor>
+          <hashTree/>
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">licenceId</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.services.sms[0].licenceId</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+          </JSONPostProcessor>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="49587">201</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">16</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST_Recharge_Wallet" enabled="false">
+          <stringProp name="HTTPSampler.domain">${Stag_Server}</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">/backend/smartvault/admin/${svCustomerID}/wallets/${ValidWalletNames}</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;tId&quot;: &quot;${t_Id}&quot;, &#xd;
+  &quot;creditLimit&quot;: 3500000,&#xd;
+   &quot;reason&quot;: &quot;refill offer&quot;&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${__P(BEARER_TOKEN)}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="true">
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="script">// Generate a random t_Id
+int randTId = 111 + (int)(Math.random() * 888);
+String tId = &quot;TYCVISP&quot; + randTId;
+vars.put(&quot;t_Id&quot;, tId);
+
+// Filter the Wallet Names
+String svCustomerID = vars.get(&quot;svCustomerID&quot;);
+String[] allWalletNames = vars.get(&quot;ExtractedWalletNames&quot;).split(&quot;,&quot;);
+
+StringBuilder matchedWallets = new StringBuilder();
+for (String walletName : allWalletNames) {
+    if (walletName.startsWith(&quot;TechCorp&quot;)) {  // Adjust the prefix if needed
+        matchedWallets.append(walletName.trim()).append(&quot;,&quot;);
+    }
+}
+
+if (matchedWallets.length() &gt; 0) {
+    matchedWallets.setLength(matchedWallets.length() - 1);
+}
+
+vars.put(&quot;ValidWalletNames&quot;, matchedWallets.toString());
+log.info(&quot;Filtered Wallet Names: &quot; + matchedWallets.toString());
+
+</stringProp>
+          </BeanShellPreProcessor>
+          <hashTree/>
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">requestId</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.requestId</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+          </JSONPostProcessor>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">2000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="49587">201</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">8</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PUT_Update_License" enabled="false">
+          <stringProp name="HTTPSampler.domain">${Stag_Server}</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">/backend/smartvault/admin/${svCustomerID}/${ValidWalletNames}/${serviceAccountName}/licences/${licenceId}</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">PUT</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;customerId&quot;: &quot;Testcuy4922&quot;,&#xd;
+    &quot;tId&quot;: &quot;${t_Id}&quot;,&#xd;
+    &quot;ccs&quot;: {&#xd;
+        &quot;countDid&quot;: 50,&#xd;
+        &quot;countVmn&quot;: 50,&#xd;
+        &quot;countChannels&quot;: 50,&#xd;
+        &quot;countAgent&quot;: 50,&#xd;
+        &quot;cliCount&quot;: 50,&#xd;
+        &quot;supervisorCount&quot;: 50,&#xd;
+        &quot;premiumNumberCount&quot;: 50,&#xd;
+        &quot;qualityAnalystCount&quot;: 50,&#xd;
+        &quot;ttsCount&quot;: 300,&#xd;
+        &quot;countVoiceLogger&quot;: 50,&#xd;
+        &quot;recordingStorageChargePerMonthPerMb&quot;: 200&#xd;
+    }&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${__P(BEARER_TOKEN)}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="true">
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="script">// Generate a random t_Id
+int randTId = 111 + (int)(Math.random() * 888);
+String tId = &quot;TYCVISP&quot; + randTId;
+vars.put(&quot;t_Id&quot;, tId);
+
+// Filter the Wallet Names
+String svCustomerID = vars.get(&quot;svCustomerID&quot;);
+String[] allWalletNames = vars.get(&quot;ExtractedWalletNames&quot;).split(&quot;,&quot;);
+
+StringBuilder matchedWallets = new StringBuilder();
+for (String walletName : allWalletNames) {
+    if (walletName.startsWith(&quot;TechCorp&quot;)) {  // Adjust the prefix if needed
+        matchedWallets.append(walletName.trim()).append(&quot;,&quot;);
+    }
+}
+
+if (matchedWallets.length() &gt; 0) {
+    matchedWallets.setLength(matchedWallets.length() - 1);
+}
+
+vars.put(&quot;ValidWalletNames&quot;, matchedWallets.toString());
+log.info(&quot;Filtered Wallet Names: &quot; + matchedWallets.toString());
+
+
+</stringProp>
+          </BeanShellPreProcessor>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">2000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET_Check_Request_status" enabled="false">
+          <stringProp name="HTTPSampler.domain">${Stag_Server}</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">/backend/smartvault/admin/api/v1/status-check?requestId=${requestId}&amp;tId=${t_Id}</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${__P(BEARER_TOKEN)}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="true">
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="script">// Generate a random t_Id
+int randTId = 111 + (int)(Math.random() * 888);
+String tId = &quot;TYCVISP&quot; + randTId;
+vars.put(&quot;t_Id&quot;, tId);
+</stringProp>
+          </BeanShellPreProcessor>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">2000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST_Active/DeactiveSA_rough" enabled="false">
+          <stringProp name="HTTPSampler.domain">${Stag_Server}</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">/backend/smartvault/admin/SV1859357784/TechCorp-UW-170/SVCLGQC?isAccountActive=false&amp;tId=${t_Id}</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;isAccountActive&quot;: false,&#xd;
+&#xd;
+    &quot;tId&quot;:&quot;${t_Id}&quot;&#xd;
+    &#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${__P(BEARER_TOKEN)}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="true">
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="script">// Generate a random t_Id
+int randTId = 111 + (int)(Math.random() * 888);
+String tId = &quot;TYCVISP&quot; + randTId;
+vars.put(&quot;t_Id&quot;, tId);
+
+// Filter the Wallet Names
+String svCustomerID = vars.get(&quot;svCustomerID&quot;);
+String[] allWalletNames = vars.get(&quot;ExtractedWalletNames&quot;).split(&quot;,&quot;);
+
+StringBuilder matchedWallets = new StringBuilder();
+for (String walletName : allWalletNames) {
+    if (walletName.startsWith(&quot;TechCorp&quot;)) {  // Adjust the prefix if needed
+        matchedWallets.append(walletName.trim()).append(&quot;,&quot;);
+    }
+}
+
+if (matchedWallets.length() &gt; 0) {
+    matchedWallets.setLength(matchedWallets.length() - 1);
+}
+
+vars.put(&quot;ValidWalletNames&quot;, matchedWallets.toString());
+log.info(&quot;Filtered Wallet Names: &quot; + matchedWallets.toString());
+
+</stringProp>
+          </BeanShellPreProcessor>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">2000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="49586">200</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">8</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST_Active/DeactiveSA" enabled="false">
+          <stringProp name="HTTPSampler.domain">${Stag_Server}</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">/backend/smartvault/admin/${svCustomerID}/${ValidWalletNames}/${serviceAccountName}?isAccountActive=false&amp;tId=${t_Id}</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;isAccountActive&quot;: false,&#xd;
+&#xd;
+    &quot;tId&quot;:&quot;${t_Id}&quot;&#xd;
+    &#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${__P(BEARER_TOKEN)}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="true">
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="script">// Generate a random t_Id
+int randTId = 111 + (int)(Math.random() * 888);
+String tId = &quot;TYCVISP&quot; + randTId;
+vars.put(&quot;t_Id&quot;, tId);
+
+// Filter the Wallet Names
+String svCustomerID = vars.get(&quot;svCustomerID&quot;);
+String[] allWalletNames = vars.get(&quot;ExtractedWalletNames&quot;).split(&quot;,&quot;);
+
+StringBuilder matchedWallets = new StringBuilder();
+for (String walletName : allWalletNames) {
+    if (walletName.startsWith(&quot;TechCorp&quot;)) {  // Adjust the prefix if needed
+        matchedWallets.append(walletName.trim()).append(&quot;,&quot;);
+    }
+}
+
+if (matchedWallets.length() &gt; 0) {
+    matchedWallets.setLength(matchedWallets.length() - 1);
+}
+
+vars.put(&quot;ValidWalletNames&quot;, matchedWallets.toString());
+log.info(&quot;Filtered Wallet Names: &quot; + matchedWallets.toString());
+
+</stringProp>
+          </BeanShellPreProcessor>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">2000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="49586">200</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">8</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PUT_Active/DeactiveWallet" enabled="false">
+          <stringProp name="HTTPSampler.domain">${Stag_Server}</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">/backend/smartvault/admin/${svCustomerID}/wallets/${ValidWalletNames}?isActive=false&amp;tId=${t_Id}</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">PUT</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;isActive&quot;: false,&#xd;
+    &quot;tId&quot;:&quot;${t_Id}&quot;&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${__P(BEARER_TOKEN)}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="true">
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="script">// Generate a random t_Id
+int randTId = 111 + (int)(Math.random() * 888);
+String tId = &quot;TYCVISP&quot; + randTId;
+vars.put(&quot;t_Id&quot;, tId);
+
+</stringProp>
+          </BeanShellPreProcessor>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">3000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET_BalanceCheck" enabled="false">
+          <stringProp name="HTTPSampler.domain">${Stag_Server}</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">/backend/smartvault/admin/api/v1/${svCustomerID}/wallets/${ValidWalletNames}/balance-check</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${__P(BEARER_TOKEN)}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="49586">200</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">8</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST_Callbackstatus" enabled="false">
+          <stringProp name="HTTPSampler.domain">${Stag_Server}</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">/backend/smartvault/api/v1/callback/${svCustomerID}/${ValidWalletNames}/${serviceAccountName}</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+ &quot;transactionId&quot;: &quot;${t_Id}&quot;,&#xd;
+&quot;requestId&quot;: &quot;${requestId}&quot;,&#xd;
+&quot;status&quot;: &quot;COMPLETED&quot;,&#xd;
+&quot;callbackActionName&quot;: &quot;serviceAccountCreationStatus&quot;,&#xd;
+&quot;description&quot;: &quot;Service Account created successfully&quot;,&#xd;
+&quot;error&quot;: &quot;No error, successfull&quot;&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${__P(BEARER_TOKEN)}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="true">
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="script">// Generate a random t_Id
+int randTId = 111 + (int)(Math.random() * 888);
+String tId = &quot;TYCVISP&quot; + randTId;
+vars.put(&quot;t_Id&quot;, tId);
+
+</stringProp>
+          </BeanShellPreProcessor>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">2000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="49586">200</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">8</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET_BalanceEnquery" enabled="false">
+          <stringProp name="HTTPSampler.domain">${Stag_Server}</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">/backend/smartvault/api/v1/wallets/${svCustomerID}/${ValidWalletNames}/balance-enquiry</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${__P(BEARER_TOKEN)}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="49586">200</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">8</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PUT_Update_Service_Account_rough" enabled="false">
+          <stringProp name="HTTPSampler.domain">${Stag_Server}</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">/backend/smartvault/admin/api/v1/SV1613465620/TechCorp-UW-331/service-accounts/SVCBSA1</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">PUT</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+  &quot;isAccountActive&quot;: true,&#xd;
+  &quot;validityFrom&quot;: &quot;2025-01-27T14:57:19.000Z&quot;,&#xd;
+  &quot;validityTo&quot;: &quot;2026-07-05T14:57:19.000Z&quot;,&#xd;
+  &quot;tId&quot;: &quot;TYCVISP600&quot;,&#xd;
+  &quot;trafficStartsAt&quot;: &quot;2025-05-29T14:51:19.000Z&quot;&#xd;
+}&#xd;
+</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${__P(BEARER_TOKEN)}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="true">
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="script">// Generate a random t_Id
+int randTId = 111 + (int)(Math.random() * 888);
+String tId = &quot;TYCVISP&quot; + randTId;
+vars.put(&quot;t_Id&quot;, tId);
+
+</stringProp>
+          </BeanShellPreProcessor>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">2000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="49586">200</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">8</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PUT_Update_Service_Account" enabled="false">
+          <stringProp name="HTTPSampler.domain">${Stag_Server}</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">/backend/smartvault/admin/api/v1/${svCustomerID}/${ValidWalletNames}/service-accounts/${serviceAccountName}</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">PUT</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+  &quot;isAccountActive&quot;: true,&#xd;
+  &quot;validityFrom&quot;: &quot;2025-01-27T14:57:19.000Z&quot;,&#xd;
+  &quot;validityTo&quot;: &quot;2026-07-05T14:57:19.000Z&quot;,&#xd;
+  &quot;tId&quot;: &quot;${t-Id}&quot;,&#xd;
+  &quot;trafficStartsAt&quot;: &quot;2025-02-13T14:57:19.000Z&quot;&#xd;
+}&#xd;
+</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${__P(BEARER_TOKEN)}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="true">
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="script">// Generate a random t_Id
+int randTId = 111 + (int)(Math.random() * 888);
+String tId = &quot;TYCVISP&quot; + randTId;
+vars.put(&quot;t_Id&quot;, tId);
+
+</stringProp>
+          </BeanShellPreProcessor>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">2000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="49586">200</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">8</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST_Wallet_Debit" enabled="false">
+          <stringProp name="HTTPSampler.domain">${Stag_Server}</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">/backend/smartvault/api/v1/wallets/${svCustomerID}/${ValidWalletNames}/DEBIT</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;tId&quot;: &quot;${t_Id}&quot;,&#xd;
+    &quot;serviceAccountName&quot;: &quot;${serviceAccountName}&quot;,&#xd;
+    &quot;amount&quot;: 700000,&#xd;
+    &quot;reason&quot;: &quot;deduct&quot;,&#xd;
+    &quot;clientId&quot;: &quot;&lt;String&gt;&quot; &#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${__P(BEARER_TOKEN)}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="true">
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="script">// Generate a random t_Id
+int randTId = 111 + (int)(Math.random() * 888);
+String tId = &quot;TYCVISP&quot; + randTId;
+vars.put(&quot;t_Id&quot;, tId);
+
+</stringProp>
+          </BeanShellPreProcessor>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">2000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="49586">200</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">8</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST_Wallet_Credit" enabled="false">
+          <stringProp name="HTTPSampler.domain">${Stag_Server}</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">/backend/smartvault/api/v1/wallets/${svCustomerID}/${ValidWalletNames}/CREDIT</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;tId&quot;: &quot;${t_Id}&quot;,&#xd;
+    &quot;serviceAccountName&quot;: &quot;${serviceAccountName}&quot;,&#xd;
+    &quot;amount&quot;: 1100000,&#xd;
+    &quot;reason&quot;: &quot;offer&quot;,&#xd;
+    &quot;clientId&quot;: &quot;&lt;String&gt;&quot; &#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${__P(BEARER_TOKEN)}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="true">
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="script">// Generate a random t_Id
+int randTId = 111 + (int)(Math.random() * 888);
+String tId = &quot;TYCVISP&quot; + randTId;
+vars.put(&quot;t_Id&quot;, tId);
+
+</stringProp>
+          </BeanShellPreProcessor>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">2000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="49586">200</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">8</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Aggregate Report" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>
